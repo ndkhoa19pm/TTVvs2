@@ -4,7 +4,7 @@ import { DivBody } from "../Div";
 export const SettingScreen = () => {
   return (
     <DivBody>
-      <Text>SettingScreen</Text>
+      <Text>SettingScreen1</Text>
     </DivBody>
   );
 };
