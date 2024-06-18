@@ -2,6 +2,7 @@
 {
     public class DataResponse
     {
-        public string? Description { get; set; }
+        public string? Description { get; set; } 
+        public string? OutPutPath { get; set; }
     }
 }

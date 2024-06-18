@@ -1,0 +1,65 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\wwwroot\\audio\\OutPut_638541512624191357.wav",
+      "PackagePath": "staticwebassets\\audio\\OutPut_638541512624191357.wav"
+    },
+    {
+      "Id": "D:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\wwwroot\\audio\\OutPut_638541512905266568.wav",
+      "PackagePath": "staticwebassets\\audio\\OutPut_638541512905266568.wav"
+    },
+    {
+      "Id": "D:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\wwwroot\\audio\\OutPut_638541513501185933.wav",
+      "PackagePath": "staticwebassets\\audio\\OutPut_638541513501185933.wav"
+    },
+    {
+      "Id": "D:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\wwwroot\\audio\\OutPut_638541514524063057.wav",
+      "PackagePath": "staticwebassets\\audio\\OutPut_638541514524063057.wav"
+    },
+    {
+      "Id": "D:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\wwwroot\\audio\\OutPut_638541515870634911.wav",
+      "PackagePath": "staticwebassets\\audio\\OutPut_638541515870634911.wav"
+    },
+    {
+      "Id": "D:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\wwwroot\\audio\\OutPut_638541516015574797.wav",
+      "PackagePath": "staticwebassets\\audio\\OutPut_638541516015574797.wav"
+    },
+    {
+      "Id": "D:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\wwwroot\\audio\\OutPut_638541516776907897.wav",
+      "PackagePath": "staticwebassets\\audio\\OutPut_638541516776907897.wav"
+    },
+    {
+      "Id": "D:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\wwwroot\\audio\\OutPut_638542365162657965.wav",
+      "PackagePath": "staticwebassets\\audio\\OutPut_638542365162657965.wav"
+    },
+    {
+      "Id": "D:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\wwwroot\\audio\\OutPut_638542556514180360.wav",
+      "PackagePath": "staticwebassets\\audio\\OutPut_638542556514180360.wav"
+    },
+    {
+      "Id": "D:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\wwwroot\\audio\\OutPut_638542557340576679.wav",
+      "PackagePath": "staticwebassets\\audio\\OutPut_638542557340576679.wav"
+    },
+    {
+      "Id": "D:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\wwwroot\\index.html",
+      "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.WebApiTTVvs2.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.WebApiTTVvs2.props",
+      "PackagePath": "build\\WebApiTTVvs2.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.WebApiTTVvs2.props",
+      "PackagePath": "buildMultiTargeting\\WebApiTTVvs2.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.WebApiTTVvs2.props",
+      "PackagePath": "buildTransitive\\WebApiTTVvs2.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

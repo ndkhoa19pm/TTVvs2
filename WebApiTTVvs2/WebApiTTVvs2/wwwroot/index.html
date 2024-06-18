@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Web API UI</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #3498db; /* Màu sắc ban đầu */
+            transition: background-color 2s ease; /* Hiệu ứng chuyển đổi màu */
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        h1, p {
+            margin: 0;
+            padding: 10px;
+            font-size: 1.5em;
+            color: #000; /* Màu chữ */
+            transition: color 2s ease; /* Hiệu ứng chuyển đổi màu chữ */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chào mừng đến với web api text to voice</h1>
+        <p>Dữ án đầu tay của khoa nhé.</p>
+    </div>
+    <script>
+        // Mảng các màu sắc để chuyển đổi
+        var colors = ["#3498db", "#e74c3c", "#2ecc71", "#f39c12", "#9b59b6", "#1abc9c", "#e67e22"];
+        var currentIndex = 0;
+
+        // Hàm thay đổi màu sắc và màu chữ
+        function changeColor() {
+            var nextColor = colors[currentIndex];
+            document.body.style.backgroundColor = nextColor; // Thay đổi màu nền
+            document.querySelectorAll('h1, p').forEach(element => {
+                element.style.color = getContrastColor(nextColor); // Thay đổi màu chữ
+            });
+            currentIndex = (currentIndex + 1) % colors.length; // Chuyển sang màu tiếp theo
+            setTimeout(changeColor, 5000); // Thực hiện lại sau mỗi 5 giây
+        }
+
+        // Hàm lấy màu chữ phù hợp với màu nền
+        function getContrastColor(hexColor) {
+            var r = parseInt(hexColor.substr(1, 2), 16);
+            var g = parseInt(hexColor.substr(3, 2), 16);
+            var b = parseInt(hexColor.substr(5, 2), 16);
+            var brightness = Math.round(((r * 299) + (g * 587) + (b * 114)) / 1000);
+            return (brightness > 125) ? "#000" : "#fff";
+        }
+
+        // Gọi hàm để bắt đầu thay đổi màu sắc
+        changeColor();
+    </script>
+</body>
+</html>

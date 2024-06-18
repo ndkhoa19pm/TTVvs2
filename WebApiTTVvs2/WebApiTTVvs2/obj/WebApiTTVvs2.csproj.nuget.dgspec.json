@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "F:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\WebApiTTVvs2.csproj": {}
+    "D:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\WebApiTTVvs2.csproj": {}
   },
   "projects": {
-    "F:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\WebApiTTVvs2.csproj": {
+    "D:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\WebApiTTVvs2.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\WebApiTTVvs2.csproj",
+        "projectUniqueName": "D:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\WebApiTTVvs2.csproj",
         "projectName": "WebApiTTVvs2",
-        "projectPath": "F:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\WebApiTTVvs2.csproj",
-        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "F:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\obj\\",
+        "projectPath": "D:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\WebApiTTVvs2.csproj",
+        "packagesPath": "C:\\Users\\khoa8\\.nuget\\packages\\",
+        "outputPath": "D:\\CongViec\\CaNhan\\TTVvs2\\WebApiTTVvs2\\WebApiTTVvs2\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\khoa8\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -46,13 +46,25 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Google.Cloud.TextToSpeech.V1": {
+              "target": "Package",
+              "version": "[2.4.0, )"
+            },
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.3, )"
             },
+            "PdfPig": {
+              "target": "Package",
+              "version": "[0.1.8, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.6.2, )"
+            },
+            "System.Speech": {
+              "target": "Package",
+              "version": "[8.0.0, )"
             }
           },
           "imports": [

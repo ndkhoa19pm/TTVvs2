@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WebApiTTVvs2")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bc66627a92ac076082c4136e9d11da4af07b7b4c")]
 [assembly: System.Reflection.AssemblyProductAttribute("WebApiTTVvs2")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WebApiTTVvs2")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
