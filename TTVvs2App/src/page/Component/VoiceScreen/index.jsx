@@ -1,44 +1,51 @@
 import * as React from "react";
-import { Button, Div, Icon, Input, Overlay, Text } from "react-native-magnus";
+import { Button, Div, Fab, Icon, Overlay, Text } from "react-native-magnus";
 import { DivBody } from "../Div";
 import * as Speech from "expo-speech";
-import { ActivityIndicator, ToastAndroid } from "react-native";
+import { ActivityIndicator, Alert, ToastAndroid } from "react-native";
 import InputText from "../InputText";
+import * as Sharing from "expo-sharing";
+import * as FileSystem from "expo-file-system";
+import { Share } from "react-native";
+import * as DocumentPicker from "expo-document-picker";
+import {
+  OnChangeFileToText,
+  OnConvertTextToFileSound,
+} from "../../../api/DashBoardService";
 export const VoiceScreen = () => {
   const [content, setContent] = React.useState("");
   const [isRun, setIsRun] = React.useState(false);
   const [overlayVisible, setOverlayVisible] = React.useState(false);
   const [segments, setSegments] = React.useState([]);
   const [currentSegmentIndex, setCurrentSegmentIndex] = React.useState(0);
-  const updateSegments = (text) => {
-    const newSegments = text
-      .split(".")
-      .map((segment) => segment.trim())
-      .filter((segment) => segment !== "");
-    setSegments(newSegments);
-    setCurrentSegmentIndex(0);
-  };
-  console.log("isrun", isRun);
+
   const speak = async () => {
+    let numbers = 0;
     try {
-      if (!isRun) {
-        setOverlayVisible(true);
+      if (content.length == 0) {
+        return;
       }
       setIsRun(true);
       const newSegments = content
         .split(".")
         .map((segment) => segment.trim())
         .filter((segment) => segment !== "");
+      const formattedArray = newSegments?.map((segment, index) => ({
+        content: segment,
+        number: index + 1,
+      }));
+      setSegments(formattedArray);
+      // đọc
       // Create an array of promises for each segment
-      const speakPromises = newSegments.map((context) => {
+      const speakPromises = formattedArray.map((context) => {
         return new Promise((resolve, reject) => {
-          Speech.speak(context, {
+          Speech.speak(context.content, {
             onStart: () => {
+              numbers = context.number;
               setOverlayVisible(false);
+              setCurrentSegmentIndex(context.number);
             },
             onStopped: () => {
-              console.log("123");
-              setCurrentSegmentIndex((prevIndex) => prevIndex + 1);
               resolve();
             },
             onError: () => {
@@ -46,7 +53,6 @@ export const VoiceScreen = () => {
               reject();
             },
             onDone: () => {
-              setCurrentSegmentIndex((prevIndex) => prevIndex + 1);
               resolve();
             },
           });
@@ -57,26 +63,158 @@ export const VoiceScreen = () => {
     } catch (error) {
       console.log("error", error);
     } finally {
-      setIsRun(false);
+      if (numbers == segments.length) {
+        setIsRun(false);
+      }
     }
   };
   const stopSpeak = () => {
     Speech.stop();
     setCurrentSegmentIndex(0);
+    setIsRun(false);
+  };
+
+  const speakSegment = (index) => {
+    if (index < 0 || index >= segments.length) {
+      setIsRun(false);
+      return;
+    }
+    Speech.speak(segments[index].content, {
+      onStart: () => {
+        setIsRun(true);
+        setCurrentSegmentIndex(index);
+      },
+      onDone: () => {
+        const nextIndex = index + 1;
+        if (nextIndex < segments.length) {
+          speakSegment(nextIndex);
+        } else {
+          setIsRun(false);
+        }
+      },
+      onError: () => {
+        setOverlayVisible(false);
+        setIsRun(false);
+      },
+    });
   };
   const handleStepForward = async () => {
-    // Speech.stop();
-    if (currentSegmentIndex < segments.length - 1) {
+    if (currentSegmentIndex < segments?.length - 1) {
+      Speech.stop();
+      speakSegment(currentSegmentIndex + 1);
     }
   };
 
   const handleStepBackward = () => {
     if (currentSegmentIndex > 0) {
-      const newIndex = currentSegmentIndex - 1;
-      setCurrentSegmentIndex(newIndex);
-      speak(newIndex);
+      Speech.stop();
+      speakSegment(currentSegmentIndex - 1);
     }
   };
+
+  const onReadFile = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: ["application/pdf", "text/plain"],
+      });
+      if (result.canceled === false) {
+        let fileType = "application/pdf"; // Loại tệp mặc định
+        if (
+          result.assets[0].mimeType === "text/plain" ||
+          result.assets[0].uri.endsWith(".txt")
+        ) {
+          fileType = "text/plain";
+        }
+
+        const formData = new FormData();
+        formData.append("file", {
+          uri: result.assets[0].uri,
+          type: fileType, // Đặt loại tệp tương ứng
+          name: "file." + (fileType === "application/pdf" ? "pdf" : "txt"),
+        });
+        // Gửi dữ liệu tệp lên server
+        let response = await OnChangeFileToText(formData);
+        if (response.success) {
+          ToastAndroid.showWithGravity(
+            response.message,
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER
+          );
+          setContent(response.data);
+        } else {
+          ToastAndroid.showWithGravity(
+            response.message,
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER
+          );
+        }
+        // Bạn có thể sử dụng result.uri để làm gì đó với tệp đã chọn.
+      } else {
+        console.log("Người dùng đã hủy việc chọn tệp.");
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+  // hàm dùng để chia sẻ
+  const onShareContent = async () => {
+    try {
+      await Share.share({
+        message: content,
+      });
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+  // hàm dùng để lưu file
+  const onSaveFile = async () => {
+    try {
+      if (content?.length === 0) {
+        ToastAndroid.showWithGravity(
+          "Vui lòng nhập văn bản",
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER
+        );
+        return;
+      }
+      let response = await OnConvertTextToFileSound({
+        description: content,
+        outPutPath: "outPut.wav",
+      });
+      if (response.success) {
+        const fileUri = FileSystem.documentDirectory + "outPut.wav";
+        const { uri: localUri } = await FileSystem.downloadAsync(
+          response.data,
+          fileUri
+        );
+        await Sharing.shareAsync(localUri);
+      } else {
+        ToastAndroid.showWithGravity(
+          response.message,
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER
+        );
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+  const createTwoButtonAlert = () =>
+    Alert.alert("Xoá văn bản", "Bạn có chắc chắn xoá văn bản", [
+      {
+        text: "Huỷ",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      {
+        text: "Đồng ý",
+        onPress: () => {
+          stopSpeak();
+          setContent("");
+        },
+      },
+    ]);
+
   return (
     <DivBody>
       {/* Phần header */}
@@ -95,7 +233,7 @@ export const VoiceScreen = () => {
           rounded="circle"
           onPress={handleStepBackward}
         >
-          <Icon name="stepbackward" color="white" />
+          <Icon fontFamily="Ionicons" name="play-skip-back" color="white" />
         </Button>
         <Button
           bg={isRun ? "#6200ee" : "white"}
@@ -107,7 +245,8 @@ export const VoiceScreen = () => {
           onPress={() => (isRun ? stopSpeak() : speak())}
         >
           <Icon
-            name={isRun ? "pause" : "caretright"}
+            fontFamily="Ionicons"
+            name={isRun ? "pause" : "play"}
             color={isRun ? "white" : "#6200ee"}
           />
         </Button>
@@ -118,7 +257,7 @@ export const VoiceScreen = () => {
           rounded="circle"
           onPress={handleStepForward}
         >
-          <Icon name="stepforward" color="white" />
+          <Icon fontFamily="Ionicons" name="play-skip-forward" color="white" />
         </Button>
       </Div>
       {/* Thẻ nhập dữ liệu */}
@@ -126,9 +265,94 @@ export const VoiceScreen = () => {
         value={content}
         onChangeText={(e) => {
           setContent(e);
-          updateSegments(e);
         }}
       />
+      {/* thẻ fap */}
+
+      <Fab bg="#6200ee" h={50} w={50} fontSize={14}>
+        <Button
+          p="none"
+          bg="transparent"
+          justifyContent="flex-end"
+          onPress={onReadFile}
+        >
+          <Div rounded="sm" bg="white" p="sm">
+            <Text fontSize="md">Tập tin</Text>
+          </Div>
+          <Icon
+            fontFamily="Ionicons"
+            name="document-text-outline"
+            color="blue600"
+            h={50}
+            w={50}
+            rounded="circle"
+            ml="md"
+            bg="white"
+          />
+        </Button>
+        <Button
+          p="none"
+          bg="transparent"
+          justifyContent="flex-end"
+          onPress={onShareContent}
+        >
+          <Div rounded="sm" bg="white" p="sm">
+            <Text fontSize="md">Chia sẻ</Text>
+          </Div>
+          <Icon
+            fontFamily="Ionicons"
+            name="share-social-outline"
+            color="blue600"
+            h={50}
+            w={50}
+            rounded="circle"
+            ml="md"
+            bg="white"
+          />
+        </Button>
+        <Button
+          p="none"
+          bg="transparent"
+          justifyContent="flex-end"
+          ml={20}
+          onPress={onSaveFile}
+        >
+          <Div rounded="sm" bg="white" p="sm">
+            <Text fontSize="md">Lưu</Text>
+          </Div>
+          <Icon
+            fontFamily="Ionicons"
+            name="cloud-download-outline"
+            color="blue600"
+            h={50}
+            w={50}
+            rounded="circle"
+            ml="md"
+            bg="white"
+          />
+        </Button>
+        <Button
+          p="none"
+          bg="transparent"
+          justifyContent="flex-end"
+          ml={20}
+          onPress={createTwoButtonAlert}
+        >
+          <Div rounded="sm" bg="white" p="sm">
+            <Text fontSize="md">Xoá</Text>
+          </Div>
+          <Icon
+            fontFamily="Ionicons"
+            name="trash-outline"
+            color="blue600"
+            h={50}
+            w={50}
+            rounded="circle"
+            ml="md"
+            bg="white"
+          />
+        </Button>
+      </Fab>
       {/* phần overlay */}
       <Overlay visible={overlayVisible} p="xl">
         <ActivityIndicator />

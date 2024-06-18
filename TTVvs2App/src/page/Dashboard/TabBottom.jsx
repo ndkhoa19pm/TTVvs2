@@ -1,7 +1,7 @@
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { VoiceScreen } from "../Component/VoiceScreen";
 import { SettingScreen } from "../Component/SettingScreen";
-import { FontAwesome } from "@expo/vector-icons";
+import { Icon } from "react-native-magnus";
 export default function TabBottom() {
   const Tab = createMaterialBottomTabNavigator();
   return (
@@ -17,7 +17,12 @@ export default function TabBottom() {
         options={{
           tabBarLabel: "Đọc",
           tabBarIcon: ({ color }) => (
-            <FontAwesome name="book" color={color} size={24} />
+            <Icon
+              fontFamily="Ionicons"
+              name="volume-high"
+              color={color}
+              fontSize={20}
+            />
           ),
         }}
       />
@@ -27,7 +32,12 @@ export default function TabBottom() {
         options={{
           tabBarLabel: "Cài đặt",
           tabBarIcon: ({ color }) => (
-            <FontAwesome name="cog" color={color} size={24} />
+            <Icon
+              fontFamily="Ionicons"
+              name="flower"
+              color={color}
+              fontSize={20}
+            />
           ),
         }}
       />
