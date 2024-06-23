@@ -1,8 +1,21 @@
 import * as React from "react";
-import { Button, Div, Fab, Icon, Overlay, Text } from "react-native-magnus";
+import {
+  Button,
+  Div,
+  Fab,
+  Icon,
+  Modal,
+  Overlay,
+  Text,
+} from "react-native-magnus";
 import { DivBody } from "../Div";
 import * as Speech from "expo-speech";
-import { ActivityIndicator, Alert, ToastAndroid } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Dimensions,
+  ToastAndroid,
+} from "react-native";
 import InputText from "../InputText";
 import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
@@ -12,8 +25,12 @@ import {
   OnChangeFileToText,
   OnConvertTextToFileSound,
 } from "../../../api/DashBoardService";
+import { ContentDialog } from "./contentDialog";
 export const VoiceScreen = () => {
+  const windowHeight = Dimensions.get("window").height;
+  const [visible, setVisible] = React.useState(false);
   const [content, setContent] = React.useState("");
+  const [hiddenHtml, setHiddenHtml] = React.useState(false);
   const [isRun, setIsRun] = React.useState(false);
   const [overlayVisible, setOverlayVisible] = React.useState(false);
   const [segments, setSegments] = React.useState([]);
@@ -25,6 +42,7 @@ export const VoiceScreen = () => {
       if (content.length == 0) {
         return;
       }
+      setVisible(true);
       setIsRun(true);
       const newSegments = content
         .split(".")
@@ -35,6 +53,7 @@ export const VoiceScreen = () => {
         number: index + 1,
       }));
       setSegments(formattedArray);
+      setHiddenHtml(true);
       // đọc
       // Create an array of promises for each segment
       const speakPromises = formattedArray.map((context) => {
@@ -51,6 +70,7 @@ export const VoiceScreen = () => {
             onError: () => {
               setOverlayVisible(false);
               reject();
+              setVisible(false);
             },
             onDone: () => {
               resolve();
@@ -65,6 +85,7 @@ export const VoiceScreen = () => {
     } finally {
       if (numbers == segments.length) {
         setIsRun(false);
+        setVisible(false);
       }
     }
   };
@@ -72,6 +93,7 @@ export const VoiceScreen = () => {
     Speech.stop();
     setCurrentSegmentIndex(0);
     setIsRun(false);
+    setVisible(false);
   };
 
   const speakSegment = (index) => {
@@ -265,8 +287,35 @@ export const VoiceScreen = () => {
         value={content}
         onChangeText={(e) => {
           setContent(e);
+          if (e?.length == 0) {
+            setHiddenHtml(false);
+          }
         }}
       />
+      {content?.length > 0 && hiddenHtml && (
+        <Div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 10, // Ensure it appears on top
+            marginBottom: 6,
+          }}
+        >
+          <Button
+            bg="transparent"
+            onPress={() => {
+              if (content.length > 0) {
+                setVisible(true);
+              }
+            }}
+          >
+            <Icon fontFamily="Ionicons" name="eye" fontSize={23}></Icon>
+          </Button>
+        </Div>
+      )}
+
       {/* thẻ fap */}
 
       <Fab bg="#6200ee" h={50} w={50} fontSize={14}>
@@ -360,6 +409,10 @@ export const VoiceScreen = () => {
           Đang tải...
         </Text>
       </Overlay>
+      {/* Modal đọc bài */}
+      {visible && (
+        <ContentDialog visible={visible} onClose={(bool) => setVisible(bool)} />
+      )}
     </DivBody>
   );
 };
