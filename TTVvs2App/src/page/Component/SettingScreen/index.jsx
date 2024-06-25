@@ -2,7 +2,14 @@ import * as React from "react";
 import { Button, Div, Icon, Modal, Text, Toggle } from "react-native-magnus";
 import { DivBody } from "../Div";
 import { storeData } from "../../../storage/asysStorage";
-import { Dimensions, TouchableOpacity } from "react-native";
+import {
+  Alert,
+  Dimensions,
+  ToastAndroid,
+  TouchableOpacity,
+} from "react-native";
+import { ListLanguageDialog } from "./listLanguageDialog";
+import { clearCache } from "../../../cache";
 
 export const SettingScreen = () => {
   const windowHeight = Dimensions.get("window").height;
@@ -12,6 +19,26 @@ export const SettingScreen = () => {
   async function onHandleLanguage() {
     await storeData();
   }
+
+  const createTwoButtonAlert = () =>
+    Alert.alert("Xoá dữ liệu", "Bạn có chắc chắn xoá dữ liệu cache không?", [
+      {
+        text: "Huỷ",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      {
+        text: "Đồng ý",
+        onPress: async () => {
+          await clearCache();
+          ToastAndroid.showWithGravity(
+            "Xoá dữ liệu cache thành công!",
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER
+          );
+        },
+      },
+    ]);
   return (
     <DivBody>
       <Div mt={12} mr={12} ml={12} mb={6}>
@@ -34,7 +61,7 @@ export const SettingScreen = () => {
             </Div>
           </Div>
         </TouchableOpacity>
-        <Div row justifyContent="space-between">
+        {/* <Div row justifyContent="space-between" mb={12}>
           <Div row>
             <Icon
               fontFamily="Ionicons"
@@ -56,24 +83,30 @@ export const SettingScreen = () => {
             h={30}
             w={60}
           />
-        </Div>
+        </Div> */}
+        <TouchableOpacity onPress={createTwoButtonAlert}>
+          <Div row justifyContent="space-between">
+            <Div row>
+              <Icon
+                fontFamily="Ionicons"
+                name="trash-bin-outline"
+                fontSize={24}
+                color="#6200ee"
+              />
+              <Div ml={12}>
+                <Text>Xoá dữ liệu</Text>
+                <Text opacity={0.5}>Nhấn vào để xoá Cache</Text>
+              </Div>
+            </Div>
+          </Div>
+        </TouchableOpacity>
       </Div>
-      <Modal isVisible={visible} h={windowHeight * 0.9}>
-        <Button
-          bg="gray400"
-          h={35}
-          w={35}
-          position="absolute"
-          top={50}
-          right={15}
-          rounded="circle"
-          onPress={() => {
-            setVisible(false);
-          }}
-        >
-          <Icon color="black900" name="close" />
-        </Button>
-      </Modal>
+      {visible && (
+        <ListLanguageDialog
+          visible={visible}
+          onClose={() => setVisible(false)}
+        />
+      )}
     </DivBody>
   );
 };
